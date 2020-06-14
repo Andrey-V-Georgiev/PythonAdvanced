@@ -14,18 +14,3 @@ def get_magic_triangle(n):
 print(get_magic_triangle(5))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

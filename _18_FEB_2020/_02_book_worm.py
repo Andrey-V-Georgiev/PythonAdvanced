@@ -1,7 +1,3 @@
-def is_outside(_next_position):
-    return True if _next_position[0] < 0 or _next_position[1] < 0 else False
-
-
 text_list = list(input())
 length_matrix = int(input())
 matrix = []
