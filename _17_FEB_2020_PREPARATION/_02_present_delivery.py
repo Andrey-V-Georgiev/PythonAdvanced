@@ -1,10 +1,9 @@
-directions = {
+directions = dict({
     "up": (-1, 0),
     "right": (0, 1),
     "down": (1, 0),
     "left": (0, -1)
-}
-
+})
 santa_position = []
 nice_kids_count = 0
 count_presents = int(input())
@@ -46,9 +45,9 @@ def give_cookie_presents(_santa_position, _next_santa_position, _count_presents,
 
     position_values = [value_up, value_right, value_down, value_left]
     for value in position_values:
-        if value in 'X':
+        if value == 'X' and _count_presents > 0:
             _count_presents -= 1
-        if value in 'V':
+        elif value == 'V' and _count_presents > 0:
             _nice_kids_given_presents += 1
             _count_presents -= 1
     return [_next_santa_position, _count_presents, _nice_kids_given_presents]
@@ -58,19 +57,22 @@ def give_presents(_santa_position, _next_santa_position, _count_presents, _nice_
     position_value = neighborhood[_next_santa_position[0]][_next_santa_position[1]]
     neighborhood[_santa_position[0]][_santa_position[1]] = '-'
     neighborhood[_next_santa_position[0]][_next_santa_position[1]] = 'S'
-    if position_value in 'XV':
-        if position_value in 'X':
-            _count_presents -= 1
-        if position_value in 'V':
-            _nice_kids_given_presents += 1
-            _count_presents -= 1
+    if position_value == 'X' and _count_presents > 0:
+        _count_presents -= 1
+    elif position_value == 'V' and _count_presents > 0:
+        _nice_kids_given_presents += 1
+        _count_presents -= 1
     return [_next_santa_position, _count_presents, _nice_kids_given_presents]
 
 
 def find_next_santa_position(_direction, _santa_position):
     old_santa_row, old_santa_col = _santa_position[0], _santa_position[1]
     direction_row, direction_col = _direction[0], _direction[1]
-    _next_santa_position = [(old_santa_row + direction_row), (old_santa_col + direction_col)]
+    next_position_row = old_santa_row + direction_row
+    next_position_col = old_santa_col + direction_col
+    if next_position_row < 0 or next_position_col < 0:
+        return None
+    _next_santa_position = [next_position_row, next_position_col]
     return _next_santa_position
 
 
@@ -99,6 +101,8 @@ while command != 'Christmas morning' and count_presents:
         next_santa_position = find_next_santa_position(directions['down'], santa_position)
     elif command == 'left':
         next_santa_position = find_next_santa_position(directions['left'], santa_position)
+    if next_santa_position is None:
+        break
     if neighborhood[next_santa_position[0]][next_santa_position[1]] == 'C':
         santa_position, count_presents, nice_kids_given_presents = give_cookie_presents(
             santa_position, next_santa_position, count_presents, nice_kids_given_presents
