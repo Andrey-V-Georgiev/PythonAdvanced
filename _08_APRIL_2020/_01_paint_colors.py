@@ -1,61 +1,33 @@
-from collections import deque
-
 main_colors = ['red', 'yellow', 'blue']
-secondary_colors = ['orange', 'purple', 'green']
-all_colors = ['red', 'yellow', 'blue', 'orange', 'purple', 'green']
-mix_table = {
+secondary_colors = {
     'orange': ('red', 'yellow'),
     'purple': ('red', 'blue'),
     'green': ('yellow', 'blue')
 }
-my_colors = []
+base_strings = input().split()
+made_colors_all = []
+made_colors_final = []
 
+while base_strings:
+    first_string = base_strings.pop(0)
+    second_string = base_strings.pop() if base_strings else ""
+    first_combination = (first_string + second_string)
+    second_combination = (second_string + first_string)
+    if first_combination in main_colors or first_combination in secondary_colors:
+        made_colors_all.append(first_combination)
+    elif second_combination in main_colors or second_combination in secondary_colors:
+        made_colors_all.append(second_combination)
+    else:
+        if first_string[:-1] != '':
+            base_strings.insert(len(base_strings) // 2, first_string[:-1])
+        if second_string[:-1] != '':
+            base_strings.insert(len(base_strings) // 2, second_string[:-1])
 
-def find_middle_index():
-    list_length = len(input_deque)
-    _mid_index = list_length / 2
-    return round(_mid_index)
+for color in made_colors_all:
+    if color in secondary_colors:
+        if secondary_colors[color][0] in made_colors_all and secondary_colors[color][1] in made_colors_all:
+            made_colors_final.append(color)
+    else:
+        made_colors_final.append(color)
 
-
-def filter_secondary_colors():
-    _my_final_colors = []
-    _sc_resource = [c for c in my_colors if c in main_colors]
-    for c in my_colors:
-        if c in main_colors and c not in secondary_colors:
-            _my_final_colors.append(c)
-        elif c in secondary_colors and c not in main_colors:
-            needed_combination = mix_table[c]
-            if needed_combination[0] in _sc_resource and needed_combination[1] in _sc_resource:
-                _my_final_colors.append(c)
-    return _my_final_colors
-
-
-input_deque = deque(input().split())
-while input_deque:
-    left_word = input_deque.popleft()
-    right_word = input_deque.pop() if len(input_deque) > 0 else None
-    if left_word in all_colors:
-        my_colors.append(left_word)
-        continue
-    if right_word:
-        if (left_word + right_word) in all_colors:
-            my_colors.append(left_word + right_word)
-        elif (right_word + left_word) in all_colors:
-            my_colors.append(right_word + left_word)
-        else:
-            if len(input_deque) == 0:
-                break
-            left_word = left_word[:-1] if len(left_word) > 0 else None
-            right_word = right_word[:-1] if len(right_word) > 0 else None
-            concat_word = None
-            if left_word and right_word:
-                concat_word = left_word + right_word
-            elif left_word:
-                concat_word = left_word
-            elif right_word:
-                concat_word = right_word
-            mid_index = find_middle_index()
-            input_deque.insert(mid_index, concat_word)
-
-my_final_colors = filter_secondary_colors()
-print(my_final_colors)
+print(made_colors_final)
